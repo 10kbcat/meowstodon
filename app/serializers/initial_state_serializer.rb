@@ -32,8 +32,22 @@ class InitialStateSerializer < ActiveModel::Serializer
   end
 
   def meta
-    store = default_meta_store
-
+    store = {
+      streaming_api_base_url: Rails.configuration.x.streaming_api_base_url,
+      access_token: object.token,
+      locale: I18n.locale,
+      domain: Rails.configuration.x.local_domain,
+      title: instance_presenter.site_title,
+      admin: object.admin&.id&.to_s,
+      search_enabled: true,
+      repository: Mastodon::Version.repository,
+      source_url: Mastodon::Version.source_url,
+      version: Mastodon::Version.to_s,
+      invites_enabled: Setting.min_invite_role == 'user',
+      mascot: instance_presenter.mascot&.file&.url,
+      profile_directory: Setting.profile_directory,
+      trends: Setting.trends,
+    }
     if object_account
       store[:me]                = object_account.id.to_s
       store[:boost_modal]       = object_account_user.setting_boost_modal

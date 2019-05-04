@@ -12,7 +12,8 @@
 
 ActiveRecord::Schema[8.1].define(version: 2026_08_12_154114) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "pg_catalog.plpgsql"
+  enable_extension "pgroonga"
+  enable_extension "plpgsql"
 
   create_table "account_aliases", force: :cascade do |t|
     t.bigint "account_id", null: false
@@ -1252,13 +1253,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_12_154114) do
 
   create_table "status_trends", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.boolean "allowed", default: false, null: false
-    t.string "language"
-    t.integer "rank", default: 0, null: false
-    t.float "score", default: 0.0, null: false
-    t.bigint "status_id", null: false
-    t.index ["account_id"], name: "index_status_trends_on_account_id"
-    t.index ["status_id"], name: "index_status_trends_on_status_id", unique: true
+    t.bigint "application_id"
+    t.bigint "in_reply_to_account_id"
+    t.bigint "poll_id"
+    t.datetime "deleted_at"
+    t.index ["account_id", "id", "visibility", "updated_at"], name: "index_statuses_20190820", order: { id: :desc }, where: "(deleted_at IS NULL)"
+    t.index ["id", "account_id"], name: "index_statuses_local_20190824", order: { id: :desc }, where: "((local OR (uri IS NULL)) AND (deleted_at IS NULL) AND (visibility = 0) AND (reblog_of_id IS NULL) AND ((NOT reply) OR (in_reply_to_account_id = account_id)))"
+    t.index ["id", "account_id"], name: "index_statuses_public_20200119", order: { id: :desc }, where: "((deleted_at IS NULL) AND (visibility = 0) AND (reblog_of_id IS NULL) AND ((NOT reply) OR (in_reply_to_account_id = account_id)))"
+    t.index ["in_reply_to_account_id"], name: "index_statuses_on_in_reply_to_account_id"
+    t.index ["in_reply_to_id"], name: "index_statuses_on_in_reply_to_id"
+    t.index ["reblog_of_id", "account_id"], name: "index_statuses_on_reblog_of_id_and_account_id"
+    t.index ["text"], name: "index_statuses_on_text", using: :pgroonga
+    t.index ["uri"], name: "index_statuses_on_uri", unique: true
   end
 
   create_table "statuses", id: :bigint, default: -> { "timestamp_id('statuses'::text)" }, force: :cascade do |t|
