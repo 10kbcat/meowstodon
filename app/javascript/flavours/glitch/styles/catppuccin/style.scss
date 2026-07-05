@@ -23,11 +23,17 @@
     color: var(--text);
     border: 1px solid rgb(var(--accent), .5);
 }
-.reactions-bar__item:hover, .reactions-bar__item:focus, .reactions-bar__item:active {
-	background: rgb(var(--accent));
-	color: var(--background-color);
-	border: 1px solid rgb(var(--accent));
+.reactions-bar__item:hover, .reactions-bar__item:focus {
+        background: rgb(var(--accent));
+        color: var(--background-color);
+        border: 1px solid rgb(var(--accent));
 }
+.reactions-bar__item.active {
+        background: rgb(var(--accent));
+        color: var(--background-color);
+        border: 1px solid rgb(var(--accent));
+}
+
 [data-color-scheme=light][data-contrast=high],
 [data-contrast=high] [data-color-scheme=light] {
     --color-text-brand: rgb(var(--accent));
