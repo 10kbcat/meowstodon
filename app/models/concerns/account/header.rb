@@ -8,7 +8,6 @@ module Account::Header
   HEADER_ANIMATED_MIME_TYPES = ['image/gif', 'image/webp'].freeze
   HEADER_LIMIT = Rails.configuration.x.use_vips ? 8.megabytes : 2.megabytes
   HEADER_DIMENSIONS = [1500, 500].freeze
-  HEADER_GEOMETRY = [HEADER_DIMENSIONS.first, HEADER_DIMENSIONS.last].join('x')
   HEADER_MAX_PIXELS = HEADER_DIMENSIONS.first * HEADER_DIMENSIONS.last
 
   class_methods do
